@@ -10,20 +10,20 @@ export default function App() {
     () => [
       {
         accessor: "id",
-        Header: "id"
+        Header: "id",
       },
       {
         accessor: "email",
-        Header: "email"
+        Header: "email",
       },
       {
         accessor: "first_name",
-        Header: "Name"
+        Header: "Name",
       },
       {
         accessor: "last_name",
-        Header: "Last name"
-      }
+        Header: "Last name",
+      },
     ],
     []
   );
@@ -35,7 +35,7 @@ export default function App() {
   useEffect(() => {
     fetch(`https://reqres.in/api/users?page=${page + 1}`)
       .then((response) => response.json())
-      .then(({ page, total_pages, data, support }) => {
+      .then(({ total_pages, data, support }) => {
         console.log(support);
         setData(data);
         setTotalPages(total_pages);
@@ -50,9 +50,10 @@ export default function App() {
           data={data}
           controlledPaging
           pageCount={totalPages}
-          fetchData={({ page, pageSize }) => {
+          fetchData={({ page }) => {
             setPage(page);
           }}
+          getRowId={(row) => row.id}
         />
       </Container>
     </div>

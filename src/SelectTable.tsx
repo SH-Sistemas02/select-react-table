@@ -1,9 +1,11 @@
 import {
   CellProps,
   Column,
+  IdType,
+  Row,
   usePagination,
   useRowSelect,
-  useTable
+  useTable,
 } from "react-table";
 import BTable, { TableProps } from "react-bootstrap/Table";
 import Pagination from "react-bootstrap/Pagination";
@@ -18,6 +20,12 @@ export interface SelectTableProps<T extends object> extends TableProps {
   fetchData?: {
     (table: { page: number; pageSize: number }): void;
   };
+  getRowId?: {
+    (row: T, relativeIndex: number, parent?: Row<T> | undefined): string;
+  };
+  onSelected?: {
+    (values: Record<IdType<T>, boolean>): void;
+  };
 }
 
 function SelectTable<T extends object>(props: SelectTableProps<T>) {
@@ -27,6 +35,8 @@ function SelectTable<T extends object>(props: SelectTableProps<T>) {
     controlledPaging,
     fetchData,
     pageCount: controlledPageCount,
+    getRowId,
+    onSelected: handleSelected,
     ...p
   } = props;
   const {
@@ -41,15 +51,15 @@ function SelectTable<T extends object>(props: SelectTableProps<T>) {
     gotoPage,
     nextPage,
     previousPage,
-    setPageSize,
-    selectedFlatRows,
-    state: { pageIndex, pageSize, selectedRowIds }
+    state: { pageIndex, pageSize, selectedRowIds },
   } = useTable(
     {
       columns,
       data,
       manualPagination: controlledPaging,
-      pageCount: controlledPageCount
+      pageCount: controlledPageCount,
+      autoResetSelectedRows: false,
+      getRowId,
     },
     usePagination,
     useRowSelect,
@@ -62,9 +72,9 @@ function SelectTable<T extends object>(props: SelectTableProps<T>) {
               {...row.getToggleRowSelectedProps()}
               aria-label="selection"
             />
-          )
+          ),
         },
-        ...columns
+        ...columns,
       ]);
     }
   );
@@ -76,9 +86,13 @@ function SelectTable<T extends object>(props: SelectTableProps<T>) {
 
     fetchData?.({
       page: pageIndex,
-      pageSize
+      pageSize,
     });
   }, [controlledPaging, fetchData, pageIndex, pageSize]);
+
+  useEffect(() => {
+    handleSelected?.(selectedRowIds);
+  }, [handleSelected, selectedRowIds]);
 
   return (
     <>
