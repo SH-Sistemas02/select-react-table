@@ -7,9 +7,10 @@ import { Button } from "react-bootstrap";
 export interface ContactsProps {
   selecting: boolean;
   onClose: () => void;
+  onSelected: (value: string) => void;
 }
 
-function Contacts({ selecting, onClose: handleClose }: ContactsProps) {
+function Contacts({ selecting, onClose: handleClose, onSelected }: ContactsProps) {
   const columns = useMemo<Column<any>[]>(
     () => [
       {
@@ -78,7 +79,11 @@ function Contacts({ selecting, onClose: handleClose }: ContactsProps) {
         </div>
 
         <div>
-          <Button disabled={selected.length !== 1}>
+          <Button onClick={() => {
+              const [item] = selected;
+              onSelected(item);
+              handleClose();
+          }} disabled={selected.length !== 1}>
             Seleccionar ({selected.length})
           </Button>
         </div>
