@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   CellProps,
   Column,
@@ -10,7 +11,6 @@ import {
 import BTable, { TableProps } from "react-bootstrap/Table";
 import Pagination from "react-bootstrap/Pagination";
 import Checkbox from "./Checkbox";
-import { useEffect } from "react";
 
 export interface SelectTableProps<T extends object> extends TableProps {
   columns: Column<T>[];
