@@ -3,7 +3,7 @@ import {
   forwardRef,
   MutableRefObject,
   useEffect,
-  useRef
+  useRef,
 } from "react";
 import FormCheck, { FormCheckProps } from "react-bootstrap/FormCheck";
 
